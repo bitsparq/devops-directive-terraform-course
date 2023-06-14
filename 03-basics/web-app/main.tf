@@ -2,9 +2,9 @@ terraform {
   # Assumes s3 bucket and dynamo DB table already set up
   # See /code/03-basics/aws-backend
   backend "s3" {
-    bucket         = "devops-directive-tf-state"
+    bucket         = "terraform-learn-20230613"
     key            = "03-basics/web-app/terraform.tfstate"
-    region         = "us-east-1"
+    region         = "ap-southeast-2"
     dynamodb_table = "terraform-state-locking"
     encrypt        = true
   }
@@ -68,9 +68,13 @@ data "aws_vpc" "default_vpc" {
   default = true
 }
 
-data "aws_subnet_ids" "default_subnet" {
-  vpc_id = data.aws_vpc.default_vpc.id
+data "aws_subnets" "default_subnet" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default_vpc.id]
+  }
 }
+
 
 resource "aws_security_group" "instances" {
   name = "instance-security-group"
@@ -177,11 +181,10 @@ resource "aws_security_group_rule" "allow_alb_all_outbound" {
 
 }
 
-
 resource "aws_lb" "load_balancer" {
   name               = "web-app-lb"
   load_balancer_type = "application"
-  subnets            = data.aws_subnet_ids.default_subnet.ids
+  subnets            = data.aws_subnets.default_subnet.ids
   security_groups    = [aws_security_group.alb.id]
 
 }
@@ -202,7 +205,7 @@ resource "aws_route53_record" "root" {
   }
 }
 
-resource "aws_db_instance" "db_instance" {
+resource "aws_db_instance" "tf_db_instance" {
   allocated_storage = 20
   # This allows any minor version within the major engine_version
   # defined below, but will also result in allowing AWS to auto
@@ -213,7 +216,7 @@ resource "aws_db_instance" "db_instance" {
   engine                     = "postgres"
   engine_version             = "12"
   instance_class             = "db.t2.micro"
-  name                       = "mydb"
+  # name                       = "mydb"
   username                   = "foo"
   password                   = "foobarbaz"
   skip_final_snapshot        = true
