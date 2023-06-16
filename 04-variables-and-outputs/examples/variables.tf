@@ -8,7 +8,7 @@ variable "instance_name" {
 variable "ami" {
   description = "Amazon machine image to use for ec2 instance"
   type        = string
-  default     = "ami-011899242bb902164" # Ubuntu 20.04 LTS // us-east-1
+  default     = "ami-03cfc01062799d369"
 }
 
 variable "instance_type" {
@@ -26,5 +26,5 @@ variable "db_user" {
 variable "db_pass" {
   description = "password for database"
   type        = string
-  sensitive   = true
+  sensitive   = true   # this would mean that when password is passed, the value will not 'echo'/show in the terminal
 }
