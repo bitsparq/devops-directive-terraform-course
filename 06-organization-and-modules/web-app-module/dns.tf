@@ -3,9 +3,17 @@ resource "aws_route53_zone" "primary" {
   name  = var.domain
 }
 
+#data "aws_route53_zone" "primary" {
+#  count = var.create_dns_zone ? 0 : 1
+#  name  = var.domain
+#}
+
 data "aws_route53_zone" "primary" {
   count = var.create_dns_zone ? 0 : 1
   name  = var.domain
+  depends_on = [
+    aws_route53_zone.primary
+  ]
 }
 
 locals {

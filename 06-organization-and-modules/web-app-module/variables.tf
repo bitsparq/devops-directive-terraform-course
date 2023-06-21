@@ -3,7 +3,7 @@
 variable "region" {
   description = "Default region for provider"
   type        = string
-  default     = "us-east-1"
+  default     = "ap-southeast-2"
 }
 
 variable "app_name" {
@@ -23,7 +23,7 @@ variable "environment_name" {
 variable "ami" {
   description = "Amazon machine image to use for ec2 instance"
   type        = string
-  default     = "ami-011899242bb902164" # Ubuntu 20.04 LTS // us-east-1
+  default     = "ami-03cfc01062799d369" # Ubuntu 20.04 LTS // ap-southeast-2
 }
 
 variable "instance_type" {
